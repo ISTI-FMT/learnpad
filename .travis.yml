@@ -1,6 +1,9 @@
 language: java
-script: bash build --debug
-# We need to avoid sudo for caching on Travis
+ 
+# Clear the learnpad JARs to avoid recaching every time
+script: bash build --debug --clean-jar
+
+# We need to remove sudo for caching on Travis
 # http://docs.travis-ci.com/user/caching/
 sudo: false
 
@@ -14,6 +17,7 @@ addons:
             - nodejs
             - openjdk-7-jdk
             - openjdk-7-jre
+
 
 cache:
     directories:

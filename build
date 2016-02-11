@@ -15,6 +15,7 @@ declare -r __FILE__="${__ROOT_PATH__}/${__BASE__}"
 declare -r __BUILD_SYSTEM_PATH__="${__ROOT_PATH__}/build-system"
 declare -r __OPTIONS__=$*
 declare __LOG_LEVEL__="ERROR"
+declare __CLEAN_MAVEN_CACHE__="false"
 
 declare -r COMPONENTS_LIST_FILE="${__ROOT_PATH__}/.components"
 
@@ -32,6 +33,9 @@ do
 			;;
 		"-d"|"--debug")
 			declare __LOG_LEVEL__="DEBUG"
+			;;
+		"-c"|"--clean-jar")
+			declare __CLEAN_MAVEN_CACHE__="true"
 			;;
 		*)
 			customlog "INFO" "\`${ARG}' is not parsed by \`${__BASE__}' script."
@@ -60,5 +64,12 @@ else
 	curl -X POST "https://labs.xwiki.com/xwiki/bin/view/BuildCounters/?xpage=plain&project=learnpad&travis_ci=1"
 fi
 set -o nounset
+
+# Remove built components from Maven repo if asked for
+# Used for Travis build so even if these JARs are changed, Travis don't cache
+if [[ "${__CLEAN_MAVEN_CACHE__}" == "true" ]]
+then
+	rm -rf ~/.m2/repositories/eu/learnpad/
+fi
 
 exit ${SUCCESS}
