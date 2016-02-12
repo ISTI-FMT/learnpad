@@ -40,6 +40,7 @@ import eu.learnpad.core.rest.RestResource;
 import eu.learnpad.cw.CoreFacade;
 import eu.learnpad.exception.LpRestException;
 import eu.learnpad.or.rest.data.Recommendations;
+import eu.learnpad.or.rest.data.SimilarCases;
 import eu.learnpad.sim.rest.data.UserData;
 
 /*
@@ -217,6 +218,16 @@ public class XwikiCoreFacadeRestResource extends RestResource implements
 
     @Override
     public InputStream tranform(String type, InputStream model) throws LpRestException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public SimilarCases retrieveSimilarCases(String modelSetId, String artifactId, String userId, String applicantName,
+        String applicationCity, String applicationZone, String applicationType, String applicationPublicAdministration,
+        String applicationSector, String applicationBusinessActivity, String applicationDescription,
+        String applicationATECOCategory) throws LpRestException
     {
         // TODO Auto-generated method stub
         return null;

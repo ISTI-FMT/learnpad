@@ -21,6 +21,8 @@ package eu.learnpad.cw;
 
 import java.util.Collection;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
@@ -28,12 +30,23 @@ import org.xwiki.component.annotation.Role;
 
 import eu.learnpad.exception.LpRestException;
 import eu.learnpad.or.rest.data.Recommendations;
+import eu.learnpad.or.rest.data.SimilarCases;
 
 @Role
 public interface UICWBridge {
 	Recommendations getRecommendations(String modelSetId, String artifactId,
 			String userId) throws LpRestException;
 
+    SimilarCases retrieveSimilarCases(@QueryParam("modelsetId") String modelSetId,
+        @QueryParam("artifactid") String artifactId, @QueryParam("userid") String userId,
+        @QueryParam("applicantName") String applicantName, @QueryParam("applicationCity") String applicationCity,
+        @QueryParam("applicationZone") String applicationZone, @QueryParam("applicationType") String applicationType,
+        @QueryParam("applicationPublicAdministration") String applicationPublicAdministration,
+        @QueryParam("applicationSector") String applicationSector,
+        @QueryParam("applicationBusinessActivity") String applicationBusinessActivity,
+        @QueryParam("applicationDescription") String applicationDescription,
+        @QueryParam("applicationATECOCategory") String applicationATECOCategory) throws LpRestException;
+    
 	String startSimulation(@PathParam("modelid") String modelId,
 			@QueryParam("currentuser") String currentUser,
 			Collection<String> potentialUsers) throws LpRestException;

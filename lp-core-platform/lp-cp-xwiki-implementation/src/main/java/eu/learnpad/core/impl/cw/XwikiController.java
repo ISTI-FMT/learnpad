@@ -38,6 +38,7 @@ import eu.learnpad.cw.BridgeInterface;
 import eu.learnpad.cw.Controller;
 import eu.learnpad.exception.LpRestException;
 import eu.learnpad.or.rest.data.Recommendations;
+import eu.learnpad.or.rest.data.SimilarCases;
 import eu.learnpad.sim.rest.data.UserData;
 
 /*
@@ -52,111 +53,129 @@ import eu.learnpad.sim.rest.data.UserData;
 @Singleton
 @Named("eu.learnpad.core.impl.cw.XwikiController")
 @Path("/learnpad/cw/corefacade")
-public class XwikiController extends Controller implements XWikiRestComponent, Initializable{
+public class XwikiController extends Controller implements XWikiRestComponent, Initializable
+{
 
     /** Set to true once the inherited BridgeInterface has been initialized. */
-    private boolean initialized = false;	
+    private boolean initialized = false;
 
     /*
-     * Note that in this solution the Controllers do not interact
-     * each-others, but each controller directly invokes the BridgesInterfaces
-     * (from the other controllers) it needs. This is not actually what was
-     * originally planned, thus in the future it may change.
-     *
-     * Also, not sure if this is the correct way to proceed.
-     * I would like to decide in a configuration file
-     * the implementation to bind, and not into the source
-     * code. In fact, this second case implies to rebuild the
-     * whole platform at each change.	
+     * Note that in this solution the Controllers do not interact each-others, but each controller directly invokes the
+     * BridgesInterfaces (from the other controllers) it needs. This is not actually what was originally planned, thus
+     * in the future it may change. Also, not sure if this is the correct way to proceed. I would like to decide in a
+     * configuration file the implementation to bind, and not into the source code. In fact, this second case implies to
+     * rebuild the whole platform at each change.
      */
-	private eu.learnpad.ca.BridgeInterface ca;
-//	private eu.learnpad.db.BridgeInterface db;
-	private eu.learnpad.me.BridgeInterface me;
-    private eu.learnpad.mv.BridgeInterface mv;
-    private eu.learnpad.mt.BridgeInterface mt;
-	private eu.learnpad.lsm.BridgeInterface lsm;
-	private eu.learnpad.or.BridgeInterface or;
-	private eu.learnpad.qm.BridgeInterface qm;
-	private eu.learnpad.sim.BridgeInterface sim;
+    private eu.learnpad.ca.BridgeInterface ca;
 
-    public synchronized void updateBridgeInterface (BridgeInterface bi){
-		this.bridge = bi;    
+    // private eu.learnpad.db.BridgeInterface db;
+    private eu.learnpad.me.BridgeInterface me;
+
+    private eu.learnpad.mv.BridgeInterface mv;
+
+    private eu.learnpad.mt.BridgeInterface mt;
+
+    private eu.learnpad.lsm.BridgeInterface lsm;
+
+    private eu.learnpad.or.BridgeInterface or;
+
+    private eu.learnpad.qm.BridgeInterface qm;
+
+    private eu.learnpad.sim.BridgeInterface sim;
+
+    public synchronized void updateBridgeInterface(BridgeInterface bi)
+    {
+        this.bridge = bi;
     }
 
-	 /** A means of instantiating the inherited BridgeInterface according
-	  * to XWIKI (see  http://extensions.xwiki.org/xwiki/bin/view/Extension/Component+Module#HComponentInitialization).
-	  * Actually in this implementation we currently support only 
-	  * the class XwikiBridgeInterfaceRestResource, but other classes (such as XwikiBridgeInterface)
-	  * should be supported in the future
-	  * 
-	  * Not sure if we can consider the default constructor.*/
-	@Override
-	public synchronized void initialize() throws InitializationException {
-		if (!this.initialized){
-// Differently from the others, the XwikiBridge of the CW is
-// a concrete class. In fact, in this implementation the controller and the bridge
-// of the CW are supposed to be implemented with XWIKI technologies and to run
-// on the same instance of the LearnPAd Core Platform. Thus it has been
-// decided to avoid the communication over some REST channel 			
-			this.bridge = new XwikiBridgeInterfaceRestResource();
-//			this.bridge = new CWXwikiBridge();
+    /**
+     * A means of instantiating the inherited BridgeInterface according to XWIKI (see
+     * http://extensions.xwiki.org/xwiki/bin/view/Extension/Component+Module#HComponentInitialization). Actually in this
+     * implementation we currently support only the class XwikiBridgeInterfaceRestResource, but other classes (such as
+     * XwikiBridgeInterface) should be supported in the future Not sure if we can consider the default constructor.
+     */
+    @Override
+    public synchronized void initialize() throws InitializationException
+    {
+        if (!this.initialized) {
+            // Differently from the others, the XwikiBridge of the CW is
+            // a concrete class. In fact, in this implementation the controller and the bridge
+            // of the CW are supposed to be implemented with XWIKI technologies and to run
+            // on the same instance of the LearnPAd Core Platform. Thus it has been
+            // decided to avoid the communication over some REST channel
+            this.bridge = new XwikiBridgeInterfaceRestResource();
+            // this.bridge = new CWXwikiBridge();
 
-			this.ca = new eu.learnpad.core.impl.ca.XwikiBridgeInterfaceRestResource();			
-//			this.db = new eu.learnpad.core.impl.db.XwikiBridgeInterfaceRestResource();			
-			this.me = new eu.learnpad.core.impl.me.XwikiBridgeInterfaceRestResource();	      
-            this.mv = new eu.learnpad.core.impl.mv.XwikiBridgeInterfaceRestResource();          
-            this.mt = new eu.learnpad.core.impl.mt.XwikiBridgeInterfaceRestResource();  		
-			this.lsm = new eu.learnpad.core.impl.lsm.XwikiBridgeInterfaceRestResource();			
-			this.or = new eu.learnpad.core.impl.or.XwikiBridgeInterfaceRestResource();			
-			this.qm = new eu.learnpad.core.impl.qm.XwikiBridgeInterfaceRestResource();			
-			this.sim = new eu.learnpad.core.impl.sim.XwikiBridgeInterfaceRestResource();			
-			
-			this.initialized=true;
-		}
-	}
+            this.ca = new eu.learnpad.core.impl.ca.XwikiBridgeInterfaceRestResource();
+            // this.db = new eu.learnpad.core.impl.db.XwikiBridgeInterfaceRestResource();
+            this.me = new eu.learnpad.core.impl.me.XwikiBridgeInterfaceRestResource();
+            this.mv = new eu.learnpad.core.impl.mv.XwikiBridgeInterfaceRestResource();
+            this.mt = new eu.learnpad.core.impl.mt.XwikiBridgeInterfaceRestResource();
+            this.lsm = new eu.learnpad.core.impl.lsm.XwikiBridgeInterfaceRestResource();
+            this.or = new eu.learnpad.core.impl.or.XwikiBridgeInterfaceRestResource();
+            this.qm = new eu.learnpad.core.impl.qm.XwikiBridgeInterfaceRestResource();
+            this.sim = new eu.learnpad.core.impl.sim.XwikiBridgeInterfaceRestResource();
 
-	@Override
-	public void commentNotification(String modelSetId, String commentId,
-			String action) throws LpRestException {
-		// TODO Auto-generated method stub
+            this.initialized = true;
+        }
+    }
 
-	}
+    @Override
+    public void commentNotification(String modelSetId, String commentId, String action) throws LpRestException
+    {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void resourceNotification(String modelSetId, String resourceId,
-			String artifactIds, String action) throws LpRestException {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void resourceNotification(String modelSetId, String resourceId, String artifactIds, String action)
+        throws LpRestException
+    {
+        // TODO Auto-generated method stub
 
-	@Override
-	public InputStream getModel(String modelSetId, String type)
-			throws LpRestException {
-		String attachmentName = String.format("%s.%s", modelSetId, type);
-		// TODO: Adapt the name dynamically for Adoxx or MagicDraw
-		String fileName = "adoxx_modelset.xml";
-		java.nio.file.Path filePath = Paths.get(fileName);
-        return XWikiRestUtils.getFileInAttachment(RestResource.CORE_REPOSITORY_WIKI,
-				RestResource.CORE_REPOSITORY_SPACE, modelSetId, attachmentName, filePath);
-	}
+    }
 
-	@Override
-	public String startSimulation(String modelId, String currentUser,
-			Collection<UserData> potentialUsers) throws LpRestException {
-		return this.sim.addProcessInstance(modelId, potentialUsers, currentUser);
-	}
+    @Override
+    public InputStream getModel(String modelSetId, String type) throws LpRestException
+    {
+        String attachmentName = String.format("%s.%s", modelSetId, type);
+        // TODO: Adapt the name dynamically for Adoxx or MagicDraw
+        String fileName = "adoxx_modelset.xml";
+        java.nio.file.Path filePath = Paths.get(fileName);
+        return XWikiRestUtils.getFileInAttachment(RestResource.CORE_REPOSITORY_WIKI, RestResource.CORE_REPOSITORY_SPACE,
+            modelSetId, attachmentName, filePath);
+    }
 
-	@Override
-	public Recommendations getRecommendations(String modelSetId,
-			String artifactId, String userId) throws LpRestException {
-		Recommendations rec = this.or.askRecommendation(modelSetId, artifactId, userId, "it-seems-it-has-no-meaning");
-//		Recommendations rec = new Recommendations();
-		return rec;
-	}
+    @Override
+    public String startSimulation(String modelId, String currentUser, Collection<UserData> potentialUsers)
+        throws LpRestException
+    {
+        return this.sim.addProcessInstance(modelId, potentialUsers, currentUser);
+    }
+
+    @Override
+    public Recommendations getRecommendations(String modelSetId, String artifactId, String userId)
+        throws LpRestException
+    {
+        Recommendations rec = this.or.askRecommendation(modelSetId, artifactId, userId, "it-seems-it-has-no-meaning");
+        // Recommendations rec = new Recommendations();
+        return rec;
+    }
 
     @Override
     public InputStream tranform(String type, InputStream model) throws LpRestException
     {
         return this.mt.transform(type, model);
+    }
+
+    @Override
+    public SimilarCases retrieveSimilarCases(String modelSetId, String artifactId, String userId, String applicantName,
+        String applicationCity, String applicationZone, String applicationType, String applicationPublicAdministration,
+        String applicationSector, String applicationBusinessActivity, String applicationDescription,
+        String applicationATECOCategory) throws LpRestException
+    {
+        return this.or.retrieveSimilarCases(modelSetId, artifactId, userId, applicantName, applicationCity,
+            applicationZone, applicationType, applicationPublicAdministration, applicationSector,
+            applicationBusinessActivity, applicationDescription, applicationATECOCategory);
     }
 }
