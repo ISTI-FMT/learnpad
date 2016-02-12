@@ -15,7 +15,7 @@ declare -r __FILE__="${__ROOT_PATH__}/${__BASE__}"
 declare -r __BUILD_SYSTEM_PATH__="${__ROOT_PATH__}/build-system"
 declare -r __OPTIONS__=$*
 declare __LOG_LEVEL__="ERROR"
-declare __CLEAN_MAVEN_CACHE__="false"
+declare __CLEAN_JAR__="false"
 
 declare -r COMPONENTS_LIST_FILE="${__ROOT_PATH__}/.components"
 
@@ -35,7 +35,7 @@ do
 			declare __LOG_LEVEL__="DEBUG"
 			;;
 		"-c"|"--clean-jar")
-			declare __CLEAN_MAVEN_CACHE__="true"
+			declare __CLEAN_JAR__="true"
 			;;
 		*)
 			customlog "INFO" "\`${ARG}' is not parsed by \`${__BASE__}' script."
@@ -67,7 +67,7 @@ set -o nounset
 
 # Remove built components from Maven repo if asked for
 # Used for Travis build so even if these JARs are changed, Travis don't cache
-if [[ "${__CLEAN_MAVEN_CACHE__}" == "true" ]]
+if [[ "${__CLEAN_JAR__}" == "true" ]]
 then
 	rm -rf ~/.m2/repositories/eu/learnpad/
 fi
